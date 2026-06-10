@@ -1,93 +1,699 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Huang Yen-Chun (Cyan)</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 56px 20px;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #fff;
-      color: #111;
-      line-height: 1.7;
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Huang Yen-Chun (Cyan)</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --bg-panel: #11161d;
+    --line: #232b36;
+    --text: #d6dde5;
+    --text-dim: #7c8a9a;
+    --accent: #5fd0c0;
+    --mono: "JetBrains Mono", "SF Mono", "Consolas", monospace;
+    --sans: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    line-height: 1.65;
+    font-size: 16px;
+  }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .wrap {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* Header / Hero */
+  header {
+    border-bottom: 1px solid var(--line);
+    padding: 64px 0 40px;
+  }
+
+  .header-top {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+  }
+
+  .header-text { flex: 1; min-width: 0; }
+
+  .avatar {
+    width: 130px;
+    height: 174px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+    filter: grayscale(15%);
+  }
+
+  @media (max-width: 540px) {
+    .header-top { flex-direction: column-reverse; }
+    .avatar { width: 100px; height: 134px; }
+  }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    letter-spacing: 0.08em;
+    margin: 0 0 14px;
+  }
+
+  .eyebrow::before { content: "$ "; color: var(--text-dim); }
+
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(32px, 6vw, 48px);
+    font-weight: 700;
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .tagline {
+    margin: 18px 0 0;
+    font-size: 16px;
+    color: var(--text-dim);
+    font-family: var(--mono);
+    border-left: 2px solid var(--line);
+    padding-left: 14px;
+  }
+
+  /* Nav */
+  nav {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  nav a {
+    font-family: var(--mono);
+    font-size: 13px;
+  }
+
+  /* Sections as two-column cards */
+  main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    padding: 48px 0;
+  }
+
+  main section {
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 28px;
+    background: var(--bg-panel);
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease, border-color 0.25s ease;
+  }
+
+  main section.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    main section {
+      opacity: 1;
+      transform: none;
+      transition: none;
     }
-    main {
-      max-width: 720px;
-      margin: 0 auto;
+  }
+
+  main section:hover {
+    border-color: var(--accent);
+  }
+
+  /* Span full width for content-heavy sections */
+  section#projects,
+  section#reflection {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 760px) {
+    main { grid-template-columns: 1fr; }
+    section#projects,
+    section#reflection {
+      grid-column: auto;
     }
-    h1 {
-      font-size: 26px;
-      font-weight: 600;
-      margin: 0 0 6px 0;
+  }
+
+  h2 {
+    font-family: var(--mono);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    margin: 0 0 20px;
+  }
+
+  h2::before { content: "// "; color: var(--text-dim); }
+
+  p { margin: 0 0 14px; color: var(--text); }
+  p:last-child { margin-bottom: 0; }
+
+  /* Field list (key-value style) */
+  .fields {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 10px 18px;
+    font-size: 15px;
+    margin-top: 24px;
+  }
+
+  .fields dt {
+    font-family: var(--mono);
+    color: var(--text-dim);
+    font-size: 13px;
+    padding-top: 2px;
+  }
+
+  .fields dd {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .fields ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .fields li { margin-bottom: 4px; }
+  .fields li:last-child { margin-bottom: 0; }
+
+  section ul {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  section li { margin-bottom: 6px; }
+  section li:last-child { margin-bottom: 0; }
+
+  /* Skills */
+  .skill-group {
+    margin-bottom: 22px;
+  }
+
+  .skill-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .skill-group h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-dim);
+    margin: 0 0 12px;
+    font-weight: 500;
+  }
+
+  .skill-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+  }
+
+  .skill-tags li {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 6px 14px;
+    background: rgba(95, 208, 192, 0.04);
+    transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.3s ease, transform 0.15s ease;
+    cursor: default;
+  }
+
+  .skill-tags li:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 12px rgba(95, 208, 192, 0.45), 0 0 2px rgba(95, 208, 192, 0.6);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-tags li {
+      transition: none;
     }
-    .meta {
-      font-size: 14px;
-      color: #555;
-      margin: 0 0 36px 0;
+    .skill-tags li:hover {
+      transform: none;
     }
-    h2 {
-      font-size: 15px;
-      font-weight: 600;
-      margin: 34px 0 10px 0;
-    }
-    p { margin: 0 0 14px 0; }
-    ul { margin: 0; padding-left: 18px; }
-    li { margin-bottom: 6px; }
-    hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 34px 0;
-    }
-    a { color: inherit; }
-  </style>
+  }
+
+  /* Project cards */
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .project-card {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .project-card h3 {
+    font-size: 17px;
+    margin: 0 0 10px;
+    color: var(--text);
+  }
+
+  .project-card p {
+    font-size: 14.5px;
+    color: var(--text-dim);
+    flex-grow: 1;
+  }
+
+  .tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 16px;
+    padding: 0;
+  }
+
+  .tags li {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 3px 8px;
+    margin: 0;
+  }
+
+  .project-card .btn {
+    align-self: flex-start;
+  }
+
+  /* Animated buttons for external links */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    text-decoration: none;
+    border: 1px solid var(--accent);
+    border-radius: 6px;
+    padding: 6px 14px;
+    position: relative;
+    overflow: hidden;
+    transition: color 0.25s ease, transform 0.15s ease;
+    z-index: 0;
+  }
+
+  .btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--accent);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    z-index: -1;
+  }
+
+  .btn:hover,
+  .btn:focus-visible {
+    color: var(--bg);
+    text-decoration: none;
+  }
+
+  .btn:hover::before,
+  .btn:focus-visible::before {
+    transform: translateX(0);
+  }
+
+  .btn:active {
+    transform: scale(0.97);
+  }
+
+  .btn-sm {
+    font-size: 12px;
+    padding: 4px 10px;
+  }
+
+  /* Footer */
+  footer {
+    padding: 32px 0 16px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text-dim);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  footer a { color: var(--text-dim); }
+  footer a:hover { color: var(--accent); }
+
+  .footer-credit {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text-dim);
+    padding: 16px 0 48px;
+    border-top: 1px solid var(--line);
+    margin-top: 16px;
+  }
+
+  .footer-credit a {
+    color: var(--text-dim);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .footer-credit a:hover {
+    color: var(--accent);
+  }
+
+  /* Contact section — visually distinct */
+  .contact-section {
+    margin-top: 48px;
+    text-align: center;
+    padding: 56px 32px;
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    background:
+      radial-gradient(circle at 50% 0%, rgba(95, 208, 192, 0.12), transparent 60%),
+      var(--bg-panel);
+    box-shadow: 0 0 40px rgba(95, 208, 192, 0.08);
+  }
+
+  .contact-section .eyebrow {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .contact-title {
+    font-family: var(--sans);
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 700;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+    text-transform: none;
+  }
+
+  .contact-title::before {
+    content: none;
+  }
+
+  .contact-sub {
+    color: var(--text-dim);
+    max-width: 520px;
+    margin: 0 auto 28px;
+  }
+
+  .contact-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-contact {
+    font-size: 14px;
+    padding: 10px 24px;
+  }
+
+  .icon {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 480px) {
+    .fields { grid-template-columns: 1fr; }
+    .fields dt { padding-top: 0; }
+  }
+</style>
 </head>
 <body>
-  <main>
-    <h1>Huang Yen-Chun (Cyan)</h1>
-    <p class="meta">Senior Undergraduate Student · Computer Science · Yuan Ze University, Taiwan</p>
 
+<div class="wrap">
+  <header>
+    <div class="header-top">
+      <div class="header-text">
+        <p class="eyebrow">whoami</p>
+        <h1>Huang Yen-Chun</h1>
+        <p class="tagline">
+          Senior Undergraduate Student · Computer Science<br>
+          Yuan Ze University, Taiwan
+        </p>
+      </div>
+      <img class="avatar" src="avatar.jpg" alt="Photo of Huang Yen-Chun" />
+    </div>
+    <nav aria-label="Section navigation">
+      <a class="btn btn-sm" href="#about">About</a>
+      <a class="btn btn-sm" href="#skills">Skills</a>
+      <a class="btn btn-sm" href="#interests">Interests</a>
+      <a class="btn btn-sm" href="#coursework">Coursework</a>
+      <a class="btn btn-sm" href="#projects">Projects</a>
+      <a class="btn btn-sm" href="#philosophy">Philosophy</a>
+      <a class="btn btn-sm" href="#reflection">Reflection</a>
+    </nav>
+  </header>
+
+  <main>
+
+  <section id="about">
     <h2>About</h2>
     <p>
-      Senior Computer Science student focused on core fundamentals and system-level reasoning.
-      Interested in understanding how systems work from low-level implementation to overall architecture.
+      I'm a senior Computer Science student with a focus on core fundamentals
+      and system-level thinking — I like understanding how things work
+      underneath, from low-level implementation details up to overall
+      architecture.
     </p>
     <p>
-      I value clarity, disciplined problem-solving, and careful reasoning in coursework and projects.
+      In coursework and personal projects, I value clarity, disciplined
+      problem-solving, and reasoning carefully through a problem before
+      jumping into code.
     </p>
+  </section>
 
-    <hr />
+  <section id="skills">
+    <h2>Skills</h2>
+    <div class="skill-group">
+      <h3>Languages</h3>
+      <ul class="skill-tags">
+        <li>C++</li>
+        <li>Python</li>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+        <li>Markdown</li>
+        <li>SQL</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <h3>Tools &amp; Platforms</h3>
+      <ul class="skill-tags">
+        <li>Git</li>
+        <li>GitHub</li>
+        <li>GitHub Pages</li>
+        <li>VS Code</li>
+      </ul>
+    </div>
+    <div class="skill-group">
+      <h3>Concepts</h3>
+      <ul class="skill-tags">
+        <li>Data Structures</li>
+        <li>Algorithms</li>
+        <li>Big Data</li>
+        <li>Analysis</li>
+        <li>Version Control</li>
+        <li>Wireless Internet</li>
+      </ul>
+    </div>
+  </section>
 
+  <section id="interests">
     <h2>Interests</h2>
-    <ul>
-      <li>Data Structures & Algorithms</li>
+    <ul class="skill-tags">
       <li>System Programming</li>
       <li>Backend Development</li>
+      <li>Wireless Internet</li>
+      <li>Big Data Research</li>
     </ul>
+  </section>
 
-    <hr />
-
-    <h2>Technical</h2>
-    <ul>
-      <li>C++ · Python · TypeScript</li>
-      <li>Git / Version Control</li>
-      <li>Basic Networking Concepts</li>
+  <section id="coursework">
+    <h2>Coursework</h2>
+    <ul class="skill-tags">
+      <li>Agile Software Development</li>
+      <li>Open Platform Software</li>
+      <li>Software Engineering</li>
+      <li>AI-assisted Software Development</li>
+      <li>Computer and Network Security</li>
+      <li>Image Processing</li>
+      <li>Video Game Production</li>
     </ul>
+  </section>
 
-    <hr />
+  <section id="projects">
+    <h2>Projects</h2>
+    <div class="project-list">
+      <article class="project-card">
+        <h3>CSV Mini Database &amp; Query Engine</h3>
+        <p>
+          A lightweight in-memory database engine built in C++. Loads CSV
+          files into typed tables and supports a SQL-like query language —
+          including filtering, aggregation (COUNT, SUM, AVG, MIN, MAX),
+          multi-table joins, and sorting.
+        </p>
+        <ul class="tags">
+          <li>C++</li>
+          <li>SQL</li>
+          <li>Data Structures</li>
+          <li>Query Engine</li>
+        </ul>
+        <a class="btn" href="https://github.com/Cyanlit/11402_CS351_ProjectB" target="_blank" rel="noopener">View on GitHub →</a>
+      </article>
 
+      <article class="project-card">
+        <h3>Two Sum Algorithm Implementation</h3>
+        <p>
+          Two C++ implementations of the classic Two Sum problem — a direct
+          array-based approach and a hash-table-based approach — with a full
+          test suite, GitHub Actions CI, and Docker containerization for
+          reproducible builds.
+        </p>
+        <ul class="tags">
+          <li>C++</li>
+          <li>Algorithms</li>
+          <li>CI/CD</li>
+          <li>Docker</li>
+        </ul>
+        <a class="btn" href="https://github.com/Cyanlit/11402_CS351_Project0" target="_blank" rel="noopener">View on GitHub →</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="philosophy">
     <h2>Philosophy</h2>
     <p>
-      I believe solid fundamentals support long-term growth.
-      I aim to build depth through disciplined study and consistent practice.
+      I believe a solid foundation is what makes long-term growth possible.
+      Rather than chasing every new framework, I'd rather build depth through
+      disciplined study and consistent practice — the kind of understanding
+      that holds up no matter what tools change around it.
     </p>
+  </section>
 
-    <hr />
+  <section id="reflection">
+    <h2>Reflection</h2>
+    <dl class="fields">
+      <dt>Why this design</dt>
+      <dd>
+        I went with a minimal, terminal-inspired layout because it matches
+        how I think about CS: dense with information, but ordered and
+        deliberate. Beyond the aesthetic, I wanted every section to be
+        scannable at a glance, since I know reviewers and recruiters often
+        skim. At the same time, I cared about getting the small things
+        right — consistent spacing, hover states, and alignment — because
+        I think attention to detail in a layout reflects the same care I
+        try to bring to code.
+      </dd>
+      <dt>Next steps</dt>
+      <dd>
+        The site currently shows what I've built, but not how I think.
+        The next addition will be a blog or notes section where I write up
+        technical posts — things like design decisions behind my projects,
+        concepts I'm learning, or problems I've debugged. I think that will
+        give a better sense of my process, not just the end results.
+      </dd>
+    </dl>
+  </section>
 
-    <p>
-      <a href="https://github.com/cyanlit">Return to my GitHub profile</a>
-    </p>
   </main>
+
+  <section id="contact" class="contact-section">
+    <p class="eyebrow">connect</p>
+    <h2 class="contact-title">Let's build something together</h2>
+    <p class="contact-sub">
+      Open to internships, collaborations, and conversations about systems,
+      algorithms, and software craftsmanship.
+    </p>
+    <div class="contact-buttons">
+      <a class="btn btn-contact" href="https://github.com/Cyanlit" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true" width="18" height="18">
+          <path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+            0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01
+            1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95
+            0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68
+            0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
+            0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013
+            8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        GitHub
+      </a>
+      <a class="btn btn-contact" href="mailto:cyaniso7301@gmail.com">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-10 7L2 7"/>
+        </svg>
+        Email
+      </a>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Huang Yen-Chun</span>
+  </footer>
+
+  <p class="footer-credit">
+    Designed &amp; built by cyan · Hosted on
+    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>
+  </p>
+</div>
+
+<script>
+  const sections = document.querySelectorAll('main section');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in-view');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  sections.forEach((section) => observer.observe(section));
+</script>
 </body>
 </html>
